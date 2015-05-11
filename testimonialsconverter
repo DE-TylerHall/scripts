@@ -1,0 +1,44 @@
+// ==UserScript==
+// @name         Testimonials
+// @namespace    https://github.com/DE-TylerHall/scripts
+// @version      0.1
+// @description  Generate Testimonials
+// @author       Tyler
+// @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
+// @grant        none
+// ==/UserScript==
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
+
+addGlobalStyle(
+    '#converted form{ padding:10px; border:1px solid black; overflow-y:scroll; height:200px; }'
+);
+$('form[action="testimonials_maint.asp"]').after('<div id="converted"><button type="submit" id="generateTestimonials">Generate DX1 Testimonials</button></div>');
+
+function convertTestimonials() {
+$('#converted').append('<form id="generatedTestimonials"></form>');
+
+$("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:first-child>font>b").addClass("tname");
+$("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:nth-child(5)>font>b").addClass("tcity");
+$("#converted~table>tbody>tr:nth-child(12n)>td:nth-child(2)>font").addClass("tquote");
+
+var tNames = [], tCities = [], tQuotes = [];
+$(".tname").each(function() { tNames.push($(this).text()) });
+$(".tcity").each(function() { tCities.push($(this).text()) });
+$(".tquote").each(function() { tQuotes.push($(this).text()) });
+
+for (var i = 0; i < tNames.length; ++i) {
+    $('form#generatedTestimonials').append('<p><code>&#60;blockquote&#62;'+tQuotes[i]+'&#60;cite&#62;'+tNames[i]+' | '+tCities[i]+'&#60;/cite&#62;&#60;/blockquote&#62;</code></p>');
+}
+}
+
+$('#generateTestimonials').click(function(){
+    convertTestimonials();
+});
