@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Testimonials
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.2
+// @version      0.1
 // @description  Generate Testimonials
 // @author       Tyler
 // @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
