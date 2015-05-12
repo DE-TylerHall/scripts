@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Testimonials
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.1
+// @version      0.2
 // @description  Generate Testimonials
 // @author       Tyler
 // @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
@@ -18,7 +18,7 @@ function addGlobalStyle(css) {
 }
 
 addGlobalStyle(
-    '#converted form{ padding:10px; border:1px solid black; overflow-y:scroll; height:200px; }'
+    '#converted form{ padding:0 15px; border:1px solid black; overflow-y:scroll; height:200px; }'
 );
 $('form[action="testimonials_maint.asp"]').after('<div id="converted"><button type="submit" id="generateTestimonials">Generate DX1 Testimonials</button></div>');
 
@@ -40,5 +40,25 @@ for (var i = 0; i < tNames.length; ++i) {
 }
 
 $('#generateTestimonials').click(function(){
+    $('#generateTestimonials').text('Here is your awesome testimonials! :-)').attr({disabled:true});
     convertTestimonials();
+    SelectText('generatedTestimonials');
 });
+
+function SelectText(element) {
+    var doc = document
+        , text = doc.getElementById(element)
+        , range, selection
+    ;    
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();        
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
