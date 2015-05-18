@@ -4,6 +4,7 @@
 // @version      0.4
 // @description  Generate Testimonials
 // @author       Tyler
+// @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/testimonialsconverter
 // @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
 // @grant        none
 // ==/UserScript==
