@@ -27,12 +27,18 @@ $('#converted').append('<form id="generatedTestimonials"></form>');
 
 $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:first-child>font>b").addClass("tname");
 $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:nth-child(5)>font>b").addClass("tcity");
-$("#converted~table>tbody>tr:nth-child(12n)>td:nth-child(2)>font").addClass("tquote");
+$("#converted~table>tbody>tr:nth-child(12n)>td:nth-child(2)").addClass("tquote");
 
 var tNames = [], tCities = [], tQuotes = [];
 $(".tname").each(function() { tNames.push($(this).text()) });
 $(".tcity").each(function() { tCities.push($(this).text()) });
-$(".tquote").each(function() { tQuotes.push($(this).text()) });
+$(".tquote").each(function() {
+    if($(this).find('font').length){
+        tQuotes.push($(this).find('font').text());
+    }else{
+        tQuotes.push(' ');
+    }
+});
 
 for (var i = 0; i < tNames.length; ++i) {
     $('form#generatedTestimonials').append('<p><code>&#60;blockquote&#62;'+tQuotes[i]+'&#60;cite&#62;'+tNames[i]+' | '+tCities[i]+'&#60;/cite&#62;&#60;/blockquote&#62;</code></p>');
