@@ -1,13 +1,50 @@
 // ==UserScript==
 // @name         Testimonials
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.5
+// @version      0.6
 // @description  Generate Testimonials
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/testimonialsconverter
 // @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
 // @grant        none
 // ==/UserScript==
+
+addGlobalStyle(
+    '#converted{padding:5px; background-color: #0074b6;color:#fff;}'+
+    '#converted>.title{padding-bottom:5px;}'+
+    '#converted label{  padding: 4px 0;display: inline-block; }'+
+    '#converted>.viewSection{background:#fff;padding:5px;color:#000;}'+
+    '#generateTestimonials{height:28px; float:right; background-color:#fff; cursor:pointer;}'+
+    '#generatedTestimonials{background-color:#fff; color:#000; padding:0 15px; border-top:2px solid #0074b6; overflow-y:scroll; height:200px;}'+
+    '#startOver, #selectAll{height:28px; float:right; background-color:#fff; cursor:pointer;}'+
+    '#converted input[type=checkbox] {cursor:pointer; position: relative;display: inline-block;width: 48px;height: 28px;vertical-align: middle;background-color: #fff;border: solid 2px #999;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;vertical-align: top;-webkit-appearance: initial;   margin: 0px 5px 0px 0px;}'+
+    '#converted input[type=checkbox]:before {content: " ";position: absolute;width: auto;height: auto;top: 2px;right: 2px;bottom: 2px;left: 2px;background-color: #999;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}'+
+    '#converted input[type=checkbox]:checked:before{background-color: #0074b6;} '+
+    '#converted input[type=checkbox]:after {content: " ";position: absolute;width: 13.71428571px;height: auto;top: -2px;right: auto;bottom: -2px;left: -2px;background-color: #000;border: solid 1px #000;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}'+
+    '#converted input[type=checkbox]:checked:after{left: auto;right: -2px;}'
+);
+
+addViewAll();
+createBoxAndMarkFields();
+$('#generateTestimonials').click(function(){
+    $('#converted .viewSection>.options').hide();
+    convertTestimonials();
+    $('#converted .viewSection>.thankyou').show();
+    $('#generatedTestimonials').show();
+    SelectText('generatedTestimonials');
+    $('#selectAll').click(function(){
+        SelectText('generatedTestimonials');
+    });
+    $('#startOver').click(function(){
+        $('#generatedTestimonials').text('').hide();
+        $('#converted .viewSection>.thankyou').hide();
+        $('#converted .viewSection>.options').show();
+    });
+});
+
+
+//################# The Functions ####################
+
 function addGlobalStyle(css) {
     var head, style;
     head = document.getElementsByTagName('head')[0];
@@ -18,44 +55,80 @@ function addGlobalStyle(css) {
     head.appendChild(style);
 }
 
-addGlobalStyle(
-    '#converted form{ padding:0 15px; border:1px solid black; overflow-y:scroll; height:200px; }'
-);
-$('form[action="testimonials_maint.asp"]').after('<div id="converted"><button type="submit" id="generateTestimonials">Generate DX1 Testimonials</button></div>');
+function addViewAll(){
+    $('form[action="testimonials_maint.asp"]').append('<button type="button" id="viewAllTestimonials">View All</button>');
+    $('#viewAllTestimonials').click(function(){window.location.href = 'https://www.psndealer.com/dealermaint/testimonials_maint.asp?status=a&TestimonialStartDate=05%2F01%2F2000&TestimonialEndDate=5%2F21%2F2015&submit=GO';});
+}
+
+function createBoxAndMarkFields() {
+    var optionsSection = '<div class="options"><input id="includeStars" type="checkbox" name="stars" value="stars"><label class="starLabel">Include Stars</label><button type="submit" id="generateTestimonials">Generate</button></div>',
+        finishedSection = '<div class="thankyou" style="display:none"><label>Here is your awesome testimonials! :-)</label><button type="button" id="startOver">Start Over</button><button type="button" id="selectAll">Select All</button></div>',
+        generatedTextbox =  '<div id="generatedTestimonials" style="display:none"></div>';
+    
+    $('form[action="testimonials_maint.asp"]').after('<div id="converted"><div class="title">Generate DX1 Testimonials</div><div class="viewSection">'+optionsSection+finishedSection+'</div>'+generatedTextbox+'</div>');
+    
+    $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:first-child>font>b").addClass("tname");
+    $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:nth-child(5)>font>b").addClass("tcity");
+    $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:nth-child(2)>td:first-child>font>b").addClass("tanonymous");
+    $("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:nth-child(3)>td:nth-child(3)>font>b").addClass("tusecomment");
+    $("#converted~table>tbody>tr:nth-child(12n+7)>td:nth-child(2)>font").addClass("tstars");
+    $("#converted~table>tbody>tr:nth-child(12n)>td:nth-child(2)").addClass("tquote");
+}
 
 function convertTestimonials() {
-$('#converted').append('<form id="generatedTestimonials"></form>');
+    var tNames = [], tCities = [], tQuotes = [], tStars = [], tAnonymous = [], tUseComment=[], starRating, tName, generatedText = '';
 
-$("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:first-child>font>b").addClass("tname");
-$("#converted~table>tbody>tr:nth-child(12n+3)>td:nth-child(2)>table>tbody>tr:first-child>td:nth-child(5)>font>b").addClass("tcity");
-$("#converted~table>tbody>tr:nth-child(12n)>td:nth-child(2)").addClass("tquote");
-
-var tNames = [], tCities = [], tQuotes = [];
-$(".tname").each(function() { tNames.push($(this).text()) });
-$(".tcity").each(function() { tCities.push($(this).text()) });
-$(".tquote").each(function() {
-    if($(this).find('font').length){
-        tQuotes.push($(this).find('font').text());
-    }else{
-        tQuotes.push(' ');
+    $(".tname").each(function() { tNames.push($(this).text()) });
+    $(".tcity").each(function() { tCities.push($(this).text()) });
+    $(".tanonymous").each(function() { tAnonymous.push($(this).text()) });
+    $(".tusecomment").each(function() { tUseComment.push($(this).text()) });
+    $(".tstars").each(function() { tStars.push($(this).text()) });
+    $(".tquote").each(function() {
+        if($(this).find('font').length){
+            tQuotes.push($(this).find('font').text());
+        }else{
+            tQuotes.push(' ');
+        }
+    });
+    for (var i = 0; i < tNames.length; ++i) {
+        if(tUseComment[i]=="Yes"){
+            starRating = '';
+            console.log($('input#includeStars').is(':checked'));
+            if ($('input#includeStars').is(':checked')) {
+                switch (tStars[i]){
+                    case 'Overall (5 Star)':
+                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
+                        break;
+                    case 'Overall (4 Star)':
+                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9734;';
+                        break;
+                    case 'Overall (3 Star)':
+                        starRating = '&#9733;&#9733;&#9733;&#9734;&#9734;';
+                        break;
+                    case 'Overall (2 Star)':
+                        starRating = '&#9733;&#9733;&#9734;&#9734;&#9734;';
+                        break;
+                    case 'Overall (1 Star)':
+                        starRating = '&#9733;&#9734;&#9734;&#9734;&#9734;';
+                        break;
+                    default:
+                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
+                }
+                starRating = ' | '+starRating;
+            }
+            tName = tNames[i];
+            if(tAnonymous[i]=="Yes"){
+                tName = 'Anonymous';
+            }
+            $('#generatedTestimonials').append('<p><code>&#60;blockquote&#62;'+tQuotes[i]+'&#60;cite&#62;'+tName+' | '+tCities[i]+starRating+'&#60;/cite&#62;&#60;/blockquote&#62;</code></p>');
+        }
     }
-});
-
-for (var i = 0; i < tNames.length; ++i) {
-    $('form#generatedTestimonials').append('<p><code>&#60;blockquote&#62;'+tQuotes[i]+'&#60;cite&#62;'+tNames[i]+' | '+tCities[i]+'&#60;/cite&#62;&#60;/blockquote&#62;</code></p>');
 }
-}
-
-$('#generateTestimonials').click(function(){
-    $('#generateTestimonials').text('Here is your awesome testimonials! :-)').attr({disabled:true});
-    convertTestimonials();
-    SelectText('generatedTestimonials');
-});
 
 function SelectText(element) {
     var doc = document
-        , text = doc.getElementById(element)
-        , range, selection
+    , text = doc.getElementById(element)
+    , range, selection
     ;    
     if (doc.body.createTextRange) {
         range = document.body.createTextRange();
@@ -69,3 +142,4 @@ function SelectText(element) {
         selection.addRange(range);
     }
 }
+
