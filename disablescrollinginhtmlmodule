@@ -1,10 +1,12 @@
 // ==UserScript==
-// @name       Disable Scrolling in HTML Module
-// @namespace  http://*.dx1sites.com/
-// @version    0.1
-// @description  Hides and shows Dx1 Menu when scrolling up and down
-// @match      http://*.dx1sites.com/*
-// @copyright  2015, Tyler Hall
+// @name         Stop Scrolling in HTML Module
+// @namespace    http://*.dx1sites.com/
+// @version      0.1
+// @description  Disables scrolling while hovering over editor
+// @author       Tyler
+// @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/disablescrollinginhtmlmodule
+// @match        http://*.dx1sites.com/*
+// @grant        none
 // ==/UserScript==
 
 function stopScrolling() {
