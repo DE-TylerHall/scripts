@@ -1,4 +1,4 @@
-# scripts
+# Tampermonkey Scripts
 ## Testimonial Converter
 Convert testimonials in psn to nicely formatted html for use in the html module
 
