@@ -57,7 +57,7 @@ function addGlobalStyle(css) {
 
 function addViewAll(){
     var d = new Date(), dd = d.getDate(), mm = d.getMonth()+1, yy = d.getFullYear();
-    $('form[action="testimonials_maint.asp"]').append('<button type="button" id="viewAllTestimonials">View All</button>');
+    $('form[action="testimonials_maint.asp"]').append('<button type="button" id="viewAllTestimonials">View All Accepted</button>');
     $('#viewAllTestimonials').click(function(){window.location.href = 'https://www.psndealer.com/dealermaint/testimonials_maint.asp?status=a&TestimonialStartDate=05%2F01%2F2000&TestimonialEndDate='+mm+'%2F'+dd+'%2F'+yy+'&submit=GO';});
 }
 
