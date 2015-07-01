@@ -1,0 +1,28 @@
+// ==UserScript==
+// @name       Disable Scrolling in HTML Module
+// @namespace  http://*.dx1sites.com/
+// @version    0.1
+// @description  Hides and shows Dx1 Menu when scrolling up and down
+// @match      http://*.dx1sites.com/*
+// @copyright  2015, Tyler Hall
+// ==/UserScript==
+
+function stopScrolling() {
+$('[id*="EditHTML_txtContent_txtContent_contentIframe"]').bind('mousewheel DOMMouseScroll', function(e) {
+    var scrollTo = null;
+
+    if (e.type == 'mousewheel') {
+        scrollTo = (e.originalEvent.wheelDelta * -1);
+    }
+    else if (e.type == 'DOMMouseScroll') {
+        scrollTo = 40 * e.originalEvent.detail;
+    }
+
+    if (scrollTo) {
+        e.preventDefault();
+        $(this).scrollTop(scrollTo + $(this).scrollTop());
+    }
+});
+}
+
+stopScrolling();
