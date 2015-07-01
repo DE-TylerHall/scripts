@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Testimonials
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.7
+// @version      0.8
 // @description  Generate Testimonials
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/testimonialsconverter
@@ -98,24 +98,26 @@ function convertTestimonials() {
             if ($('input#includeStars').is(':checked')) {
                 switch (tStars[i]){
                     case 'Overall (5 Star)':
-                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
+                        starRating = ' | &#9733;&#9733;&#9733;&#9733;&#9733;';
                         break;
                     case 'Overall (4 Star)':
-                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9734;';
+                        starRating = ' | &#9733;&#9733;&#9733;&#9733;&#9734;';
                         break;
                     case 'Overall (3 Star)':
-                        starRating = '&#9733;&#9733;&#9733;&#9734;&#9734;';
+                        starRating = ' | &#9733;&#9733;&#9733;&#9734;&#9734;';
                         break;
                     case 'Overall (2 Star)':
-                        starRating = '&#9733;&#9733;&#9734;&#9734;&#9734;';
+                        starRating = ' | &#9733;&#9733;&#9734;&#9734;&#9734;';
                         break;
                     case 'Overall (1 Star)':
-                        starRating = '&#9733;&#9734;&#9734;&#9734;&#9734;';
+                        starRating = ' | &#9733;&#9734;&#9734;&#9734;&#9734;';
+                        break;
+                    case 'Overall (0 Star)':
+                        starRating = '';
                         break;
                     default:
-                        starRating = '&#9733;&#9733;&#9733;&#9733;&#9733;';
+                        starRating = ' | &#9733;&#9733;&#9733;&#9733;&#9733;';
                 }
-                starRating = ' | '+starRating;
             }
             tName = tNames[i];
             if(tAnonymous[i]=="Yes"){
