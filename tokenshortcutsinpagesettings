@@ -5,7 +5,7 @@
 // @description  Token Shortcuts
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
-// @match        http://*.demo.dx1sites.com/*
+// @match        http://*.dx1sites.com/*
 // @grant        none
 // ==/UserScript==
 
