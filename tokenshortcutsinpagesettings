@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tokens Shortcuts
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.1
+// @version      0.2
 // @description  Token Shortcuts
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
@@ -14,12 +14,14 @@ addToken('dealername',2);
 addToken('city',2);
 addToken('state',2);
 addToken('statelong',2);
+addTokenCustom(1,'[dealername] [city], [statelong]',2);
 addShortcutBar(5);
 addToken('dealername',5);
 addToken('city',5);
 addToken('state',5);
 addToken('statelong',5);
 addToken('filter',5);
+addTokenCustom(1,'[dealername] [city], [statelong]',5);
 
 //################# The Functions ####################
 
@@ -31,6 +33,105 @@ function addToken(token, nth) {
    $('#shortcutbar'+nth).append('<button type="button" id="shortcut-'+nth+'-'+token+'">['+token+']</button>');
    $('#shortcut-'+nth+'-'+token).on('click', function () {
        var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+')>[name*="dnn$ctr$ManageTabs$"]');
-       text.val(text.val() + ' ['+token+']');    
+       addText(text,' ['+token+']');    
     });
+    function addText(field,thetext) {
+        var caretPos = field[0].selectionStart,
+            textAreaTxt = field.val();
+        field.val(textAreaTxt.substring(0, caretPos) + thetext + textAreaTxt.substring(caretPos));
+        field.focus();
+        caretTo(field,caretPos+thetext.length);
+    }
 }
+function addTokenCustom(num,token,nth) {
+   $('#shortcutbar'+nth).append('<button type="button" id="shortcut-'+nth+'-custom'+num+'">'+token+'</button>');
+   $('#shortcut-'+nth+'-custom'+num).on('click', function () {
+       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+')>[name*="dnn$ctr$ManageTabs$"]');
+       addText(text,token);    
+    });
+    function addText(field,thetext) {
+        var caretPos = field[0].selectionStart,
+            textAreaTxt = field.val();
+        field.val(textAreaTxt.substring(0, caretPos) + thetext + textAreaTxt.substring(caretPos));
+        field.focus();
+        caretTo(field,caretPos+thetext.length);
+    }
+}
+
+function caretTo(theTarget,pos) {
+    var target = theTarget[0];
+	var isContentEditable = target.contentEditable === 'true';
+    //get
+    if (arguments.length == 0) {
+      //HTML5
+      if (window.getSelection) {
+        //contenteditable
+        if (isContentEditable) {
+          target.focus();
+          var range1 = window.getSelection().getRangeAt(0),
+              range2 = range1.cloneRange();
+          range2.selectNodeContents(target);
+          range2.setEnd(range1.endContainer, range1.endOffset);
+          return range2.toString().length;
+        }
+        //textarea
+        return target.selectionStart;
+      }
+      //IE<9
+      if (document.selection) {
+        target.focus();
+        //contenteditable
+        if (isContentEditable) {
+            var range1 = document.selection.createRange(),
+                range2 = document.body.createTextRange();
+            range2.moveToElementText(target);
+            range2.setEndPoint('EndToEnd', range1);
+            return range2.text.length;
+        }
+        //textarea
+        var pos = 0,
+            range = target.createTextRange(),
+            range2 = document.selection.createRange().duplicate(),
+            bookmark = range2.getBookmark();
+        range.moveToBookmark(bookmark);
+        while (range.moveStart('character', -1) !== 0) pos++;
+        return pos;
+      }
+      // Addition for jsdom support
+      if (target.selectionStart)
+        return target.selectionStart;
+      //not supported
+      return 0;
+    }
+    //set
+    if (pos == -1)
+      pos = this[isContentEditable? 'text' : 'val']().length;
+    //HTML5
+    if (window.getSelection) {
+      //contenteditable
+      if (isContentEditable) {
+        target.focus();
+        window.getSelection().collapse(target.firstChild, pos);
+      }
+      //textarea
+      else
+        target.setSelectionRange(pos, pos);
+    }
+    //IE<9
+    else if (document.body.createTextRange) {
+      if (isContentEditable) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(target);
+        range.moveStart('character', pos);
+        range.collapse(true);
+        range.select();
+      } else {
+        var range = target.createTextRange();
+        range.move('character', pos);
+        range.select();
+      }
+    }
+    if (!isContentEditable)
+      target.focus();
+    return pos;
+  }
