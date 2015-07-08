@@ -1,0 +1,36 @@
+// ==UserScript==
+// @name         Tokens Shortcuts
+// @namespace    https://github.com/DE-TylerHall/scripts
+// @version      0.1
+// @description  Token Shortcuts
+// @author       Tyler
+// @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
+// @match        http://*.demo.dx1sites.com/*
+// @grant        none
+// ==/UserScript==
+
+addShortcutBar(2);
+addToken('dealername',2);
+addToken('city',2);
+addToken('state',2);
+addToken('statelong',2);
+addShortcutBar(5);
+addToken('dealername',5);
+addToken('city',5);
+addToken('state',5);
+addToken('statelong',5);
+addToken('filter',5);
+
+//################# The Functions ####################
+
+function addShortcutBar(nth){
+    $('#dnnPageDetails fieldset>div:nth-child('+nth+')').prepend('<div id="shortcutbar'+nth+'" style="text-align:center"></div>');
+}
+
+function addToken(token, nth) {
+   $('#shortcutbar'+nth).append('<button type="button" id="shortcut-'+nth+'-'+token+'">['+token+']</button>');
+   $('#shortcut-'+nth+'-'+token).on('click', function () {
+       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+')>[name*="dnn$ctr$ManageTabs$"]');
+       text.val(text.val() + ' ['+token+']');    
+    });
+}
