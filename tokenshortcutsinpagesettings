@@ -1,38 +1,57 @@
 // ==UserScript==
 // @name         Tokens Shortcuts
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.2
+// @version      0.3
 // @description  Token Shortcuts
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
-// @match        http://*.dx1sites.com/*
+// @match        http://*.dx1sites.com/*/ctl/Tab/action/edit/activeTab/settingTab*
 // @grant        none
 // ==/UserScript==
 
+loadjscssfile("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", "css");
+loadjscssfile("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js", "js");
+addGlobalStyle(
+    '#dnnPageDetails a{cursor:pointer}'+
+    '#dnnPageDetails .btn-group:hover>.dropdown-menu{display:block;}'+
+    '#dnnPageDetails .btn-group>.dropdown-menu{margin:0;}'+
+    '#dnnPageDetails .dnnFormItem .dnnLabel{height: 60px;}'+
+    '#dnnPageDetails .btn-group-justified{width:45%;  display: inline-block;}'
+);
 addShortcutBar(2);
-addToken('dealername',2);
-addToken('city',2);
-addToken('state',2);
-addToken('statelong',2);
-addTokenCustom(1,'[dealername] [city], [statelong]',2);
+addMoreDropdown(2);
+addToken('dealername',2,true);
+addToken('city',2,true);
+addToken('state',2,true);
+addToken('statelong',2,true);
+addTokenCustom(1,' [dealername] [city], [statelong]',2);
 addShortcutBar(5);
-addToken('dealername',5);
-addToken('city',5);
-addToken('state',5);
-addToken('statelong',5);
-addToken('filter',5);
-addTokenCustom(1,'[dealername] [city], [statelong]',5);
+addMoreDropdown(5);
+addToken('dealername',5,true);
+addToken('city',5,true);
+addToken('state',5,true);
+addToken('statelong',5,true);
+addToken('filter',5,true);
+addTokenCustom(1,' [dealername] [city], [statelong]',5);
 
 //################# The Functions ####################
 
 function addShortcutBar(nth){
-    $('#dnnPageDetails fieldset>div:nth-child('+nth+')').prepend('<div id="shortcutbar'+nth+'" style="text-align:center"></div>');
+    $('#dnnPageDetails fieldset>div:nth-child('+nth+')').prepend('<div id="shortcutbar'+nth+'" class="btn-group btn-group-sm btn-group-justified" style="text-align:center"></div>');
+}
+function addMoreDropdown(nth){
+    $('#dnnPageDetails fieldset>div:nth-child('+nth+')>.btn-group').prepend('<div class="btn-group btn-group-sm" role="group"><a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a><ul class="dropdown-menu dropdown-menu-right"></ul></div>');
 }
 
-function addToken(token, nth) {
-   $('#shortcutbar'+nth).append('<button type="button" id="shortcut-'+nth+'-'+token+'">['+token+']</button>');
+
+function addToken(token, nth, more) {
+    if(more){
+        $('#shortcutbar'+nth+'>.btn-group>.dropdown-menu').append('<li><a type="button" id="shortcut-'+nth+'-'+token+'">['+token+']</a></li>');
+    }else{
+        $('#shortcutbar'+nth).prepend('<a type="button" id="shortcut-'+nth+'-'+token+'" class="btn btn-default">['+token+']</a>');
+    }
    $('#shortcut-'+nth+'-'+token).on('click', function () {
-       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+')>[name*="dnn$ctr$ManageTabs$"]');
+       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+') [name*="dnn$ctr$ManageTabs$"]');
        addText(text,' ['+token+']');    
     });
     function addText(field,thetext) {
@@ -43,10 +62,14 @@ function addToken(token, nth) {
         caretTo(field,caretPos+thetext.length);
     }
 }
-function addTokenCustom(num,token,nth) {
-   $('#shortcutbar'+nth).append('<button type="button" id="shortcut-'+nth+'-custom'+num+'">'+token+'</button>');
+function addTokenCustom(num,token,nth,more) {
+    if(more){
+        $('#shortcutbar'+nth+'>.btn-group>.dropdown-menu').append('<li><a type="button" id="shortcut-'+nth+'-custom'+num+'">'+token+'</a></li>');
+    }else{
+        $('#shortcutbar'+nth).prepend('<a type="button" id="shortcut-'+nth+'-custom'+num+'" class="btn btn-default">'+token+'</a>');
+    }
    $('#shortcut-'+nth+'-custom'+num).on('click', function () {
-       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+')>[name*="dnn$ctr$ManageTabs$"]');
+       var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+') [name*="dnn$ctr$ManageTabs$"]');
        addText(text,token);    
     });
     function addText(field,thetext) {
@@ -135,3 +158,28 @@ function caretTo(theTarget,pos) {
       target.focus();
     return pos;
   }
+
+function loadjscssfile(filename, filetype){
+    if (filetype=="js"){ //if filename is a external JavaScript file
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", filename)
+    }
+    else if (filetype=="css"){ //if filename is an external CSS file
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        fileref.setAttribute("href", filename)
+    }
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
