@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Stop Scrolling in HTML Module
 // @namespace    http://*.dx1sites.com/
-// @version      0.1
+// @version      0.2
 // @description  Disables scrolling while hovering over editor
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/disablescrollinginhtmlmodule
@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 function stopScrolling() {
-$('[id*="EditHTML_txtContent_txtContent_contentIframe"]').bind('mousewheel DOMMouseScroll', function(e) {
+$('[id*="EditHTML_txtContent_txtContentCenter"]').bind('mousewheel DOMMouseScroll', function(e) {
     var scrollTo = null;
 
     if (e.type == 'mousewheel') {
