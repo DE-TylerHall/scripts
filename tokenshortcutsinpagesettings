@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tokens Shortcuts
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.3
+// @version      0.4
 // @description  Token Shortcuts
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
@@ -24,7 +24,7 @@ addToken('dealername',2,true);
 addToken('city',2,true);
 addToken('state',2,true);
 addToken('statelong',2,true);
-addTokenCustom(1,' [dealername] [city], [statelong]',2);
+addTokenCustom(1,'[dealername] in [city], [statelong]',2);
 addShortcutBar(5);
 addMoreDropdown(5);
 addToken('dealername',5,true);
@@ -32,7 +32,7 @@ addToken('city',5,true);
 addToken('state',5,true);
 addToken('statelong',5,true);
 addToken('filter',5,true);
-addTokenCustom(1,' [dealername] [city], [statelong]',5);
+addTokenCustom(1,'[dealername] in [city], [statelong]',5);
 
 //################# The Functions ####################
 
@@ -52,7 +52,7 @@ function addToken(token, nth, more) {
     }
    $('#shortcut-'+nth+'-'+token).on('click', function () {
        var text = $('#dnnPageDetails fieldset>div:nth-child('+nth+') [name*="dnn$ctr$ManageTabs$"]');
-       addText(text,' ['+token+']');    
+       addText(text,'['+token+']');    
     });
     function addText(field,thetext) {
         var caretPos = field[0].selectionStart,
