@@ -4,7 +4,7 @@
 // @version    0.1
 // @description  Hides and shows Dx1 Menu when scrolling up and down
 // @author       Tyler
-// @updateURL    http://pastebin.com/raw.php?i=rTYdqWK2
+// @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/quickmenubaritems
 // @match      http://*.dx1sites.com/*
 // ==/UserScript==
 
