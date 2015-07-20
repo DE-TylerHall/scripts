@@ -2,7 +2,7 @@
 // @name         Testimonials
 // @namespace    https://github.com/DE-TylerHall/scripts
 // @version      0.8
-// @description  Generate Testimonials
+// @description  Convert testimonials in psn to nicely formatted html for use in the html module
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/testimonialsconverter
 // @match        https://www.psndealer.com/dealermaint/testimonials_maint.asp*
