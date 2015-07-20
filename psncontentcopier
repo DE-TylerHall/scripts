@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         PSN Content Copier
 // @namespace    https://github.com/DE-TylerHall/scripts
-// @version      0.5
+// @version      0.6
 // @description  Enable quick copy of contents from psn maintenance site
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/psncontentcopier
 // @match        http://www.psndealer.com/dealersite/*
 // @grant        none
 // ==/UserScript==
-var THECODE = '';
+var THECODE = '<p style="clear:both">';
 addGlobalStyle(
     '#DX1BAR{border-bottom:#0074b6 3px solid}'+
     '#DX1BAR>.section.dx1-blue>.container{background-color: #0074b6;color: #fff;padding:5px 0;}'+
@@ -43,7 +43,7 @@ function addGlobalStyle(css) {
 }
 
 function makeBar(){
-    $('body').prepend('<div id="DX1BAR"><div class="section dx1-blue"><div class="container">DX1: Generated HTML from PSN Page - Copy Below (CTRL+C)<div id="DX1Select">Select All</div></div></div><div id="DX1GeneratedSection" class="section"><div class="container"><code id="DX1GeneratedHTML"></code></div></div></div></div>');
+    $('body').prepend('<div id="DX1BAR"><div class="section dx1-blue"><div class="container">[BETA] DX1: Generated HTML from PSN Page - Copy Below (CTRL+C)<div id="DX1Select">Select All</div></div></div><div id="DX1GeneratedSection" class="section"><div class="container"><code id="DX1GeneratedHTML"></code></div></div></div></div>');
 }
 
 function findContent(){
@@ -61,36 +61,84 @@ function findNodes(){
     });
 }
 function gatherNodes(){
-    var isImg;
+    var wasImg = false, wasP = false, wasImgLeft = false, wasImgRight = false, openP = '<p style="clear:both">', i=0;
+	console.log('We start with '+THECODE);
     $('.DX1PSNCONTENT').find('.DX1PageContent').each( function(){
+		i++;
+		console.log("## Start Object "+i+" #####################");
+		//if(!wasImgLeft||wasP){
+			//THECODE = THECODE + openP;
+			//console.log('Object was preceded by text, a right aligned image, or nothing: added "'+openP+'"');
+		//}
+			
         switch(true){
+				
             case $(this).is('img.Left'):
             case $(this).is('img[align="Left"]'):
-                THECODE = THECODE + '<p style="clear:both"><img src="'+$(this).attr('src')+'" style="margin:0px 5px 5px 0px; float:left;" />';
-                //console.log('Image.Left');
+				console.log('This object is a left aligned image: added: "<img>"');
+				consoleTest();
+                THECODE = THECODE + '<img src="'+$(this).attr('src')+'" style="margin:0px 5px 5px 0px; float:left;" />';
+				console.log('Added: "<img>"');
+				wasP = false;
+				wasImgLeft = true;
+				wasImgRight = false;
+				wasImg = false;
                 break;
+				
             case $(this).is('img.Right'):
             case $(this).is('img[align="Right"]'):
-                THECODE = THECODE + '<p style="clear:both"><img src="'+$(this).attr('src')+'" style="margin:0px 0px 5px 5px; float:right;" />';
-                //console.log('Image.Right');
+				console.log("This object is a right aligned image");
+				consoleTest();
+				THECODE = THECODE + '<img src="'+$(this).attr('src')+'" style="margin:0px 0px 5px 5px; float:right;" />';
+				console.log('Added: "<img>"');
+				wasP = false;
+				wasImgLeft = false;
+				wasImgRight = true;
+				wasImg = false;
                 break;
+				
             case $(this).is('img'):
-                THECODE = THECODE + '<img src="'+$(this).attr('src')+'" />';
-                //console.log('Image');
+				console.log("This object is an image");
+				consoleTest();
+                THECODE = THECODE + '<img src="'+$(this).attr('src')+'" /></p>';
+				wasP = false;
+				wasImgLeft = false;
+				wasImgRight = false;
+				wasImg = true;
                 break;
+				
             case $(this).is('.DX1TextNode'):
-                if(isImg)
-                    THECODE = THECODE + $(this).text()+'</p>';
-                else
-                    THECODE = THECODE + '<p style="clear:both">'+$(this).text()+'</p>';
-                //console.log('Text');
+				console.log("This object is text");
+				consoleTest();
+				if(wasP){
+					THECODE = THECODE + openP;
+					console.log('Therefore we opened a p tag: "'+openP);
+				}
+				if(wasImg||wasImgRight){
+					THECODE = THECODE + '</p>'+openP;
+					console.log('Therefore we opened and closed p tags: "</p>'+openP+'"');
+				}
+                THECODE = THECODE + $(this).text();
+				if(wasImgLeft) THECODE = THECODE + '</p>';
+				wasP = true;
+				wasImgLeft = false;
+				wasImgRight = false;
+				wasImg = false;
                 break;
         }
-        isImg = $(this).is('img');
+		//THECODE = THECODE + '</p>';
+		console.log("THE CODE: \n"+THECODE);
+		console.log("## End Object "+i+" ######################");
     });
-    if(isImg)
+    
         THECODE = THECODE+'</p>';
     //console.log(THECODE);
+	function consoleTest(){
+		if(wasP)console.log("The object before was text");
+		if(wasImgLeft)console.log("The object before was a left aligned image");
+		if(wasImgRight)console.log("The object before was a right aligned image");
+		if(wasImg)console.log("The object before was an image");
+	}
 }
 function generateHTML(){
 $('#DX1GeneratedSection>.container>code').text(THECODE);
