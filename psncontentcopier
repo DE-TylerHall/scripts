@@ -2,7 +2,7 @@
 // @name         PSN Content Copier
 // @namespace    https://github.com/DE-TylerHall/scripts
 // @version      0.5
-// @description  Generate Testimonials
+// @description  Enable quick copy of contents from psn maintenance site
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/psncontentcopier
 // @match        http://www.psndealer.com/dealersite/*
