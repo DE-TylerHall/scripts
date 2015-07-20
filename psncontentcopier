@@ -15,7 +15,8 @@ addGlobalStyle(
     '#DX1BAR>.section{background-color: #0074b6;}'+
     '#DX1BAR>.section>.container{ background-color:#fff; width:70%; margin:0 auto; }'+
     '#DX1GeneratedSection>.container{ height:50px; overflow-y:scroll; padding:0 5px}'+
-    '#DX1Select{float:right;cursor:hand;}'
+    '#DX1Select{float:right;cursor:hand;}'+
+	'.dx1betared{background:red;color:#fff;}'
 );
 
 makeBar();
@@ -43,7 +44,7 @@ function addGlobalStyle(css) {
 }
 
 function makeBar(){
-    $('body').prepend('<div id="DX1BAR"><div class="section dx1-blue"><div class="container">[BETA] DX1: Generated HTML from PSN Page - Copy Below (CTRL+C)<div id="DX1Select">Select All</div></div></div><div id="DX1GeneratedSection" class="section"><div class="container"><code id="DX1GeneratedHTML"></code></div></div></div></div>');
+    $('body').prepend('<div id="DX1BAR"><div class="section dx1-blue"><div class="container"><span class="dx1betared">[BETA]</span> DX1: Generated HTML from PSN Page - Copy Below (CTRL+C)<div id="DX1Select">Select All</div></div></div><div id="DX1GeneratedSection" class="section"><div class="container"><code id="DX1GeneratedHTML"></code></div></div></div></div>');
 }
 
 function findContent(){
