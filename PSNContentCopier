@@ -1,0 +1,115 @@
+// ==UserScript==
+// @name         PSN Content Copier
+// @namespace    https://github.com/DE-TylerHall/scripts
+// @version      0.5
+// @description  Generate Testimonials
+// @author       Tyler
+// @updateURL    http://pastebin.com/raw.php?i=rTYdqWK2
+// @match        http://www.psndealer.com/dealersite/*
+// @grant        none
+// ==/UserScript==
+var THECODE = '';
+addGlobalStyle(
+    '#DX1BAR{border-bottom:#0074b6 3px solid}'+
+    '#DX1BAR>.section.dx1-blue>.container{background-color: #0074b6;color: #fff;padding:5px 0;}'+
+    '#DX1BAR>.section{background-color: #0074b6;}'+
+    '#DX1BAR>.section>.container{ background-color:#fff; width:70%; margin:0 auto; }'+
+    '#DX1GeneratedSection>.container{ height:50px; overflow-y:scroll; padding:0 5px}'+
+    '#DX1Select{float:right;cursor:hand;}'
+);
+
+makeBar();
+findContent();
+wrapTextNodes();
+findNodes();
+gatherNodes();
+generateHTML();
+selectText('DX1GeneratedHTML');
+$('#DX1Select').click(function(){
+    selectText('DX1GeneratedHTML');
+});
+
+
+//################# The Functions ####################
+
+function addGlobalStyle(css) {
+    var head, style;
+    head = document.getElementsByTagName('head')[0];
+    if (!head) { return; }
+    style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    head.appendChild(style);
+}
+
+function makeBar(){
+    $('body').prepend('<div id="DX1BAR"><div class="section dx1-blue"><div class="container">DX1: Generated HTML from PSN Page - Copy Below (CTRL+C)<div id="DX1Select">Select All</div></div></div><div id="DX1GeneratedSection" class="section"><div class="container"><code id="DX1GeneratedHTML"></code></div></div></div></div>');
+}
+
+function findContent(){
+    $('[background$="content_image_detail.jpg"] tbody>tr>td table').addClass('DX1PSNCONTENT');
+}
+function wrapTextNodes(){
+    $('.DX1PSNCONTENT *').contents().filter(function() { 
+        return (this.nodeType == 3) && this.nodeValue.match(/\S/); 
+    }).wrap('<div class="DX1TextNode"></div>');
+}
+function findNodes(){
+    $('.DX1PSNCONTENT').find('img, .DX1TextNode').each(function(){
+        $(this).css( 'border', '3px solid pink' );
+        $(this).addClass('DX1PageContent');
+    });
+}
+function gatherNodes(){
+    var isImg;
+    $('.DX1PSNCONTENT').find('.DX1PageContent').each( function(){
+        switch(true){
+            case $(this).is('img.Left'):
+            case $(this).is('img[align="Left"]'):
+                THECODE = THECODE + '<p style="clear:both"><img src="'+$(this).attr('src')+'" style="margin:0px 5px 5px 0px; float:left;" />';
+                //console.log('Image.Left');
+                break;
+            case $(this).is('img.Right'):
+            case $(this).is('img[align="Right"]'):
+                THECODE = THECODE + '<p style="clear:both"><img src="'+$(this).attr('src')+'" style="margin:0px 0px 5px 5px; float:right;" />';
+                //console.log('Image.Right');
+                break;
+            case $(this).is('img'):
+                THECODE = THECODE + '<img src="'+$(this).attr('src')+'" />';
+                //console.log('Image');
+                break;
+            case $(this).is('.DX1TextNode'):
+                if(isImg)
+                    THECODE = THECODE + $(this).text()+'</p>';
+                else
+                    THECODE = THECODE + '<p style="clear:both">'+$(this).text()+'</p>';
+                //console.log('Text');
+                break;
+        }
+        isImg = $(this).is('img');
+    });
+    if(isImg)
+        THECODE = THECODE+'</p>';
+    //console.log(THECODE);
+}
+function generateHTML(){
+$('#DX1GeneratedSection>.container>code').text(THECODE);
+}
+
+function selectText(element) {
+    var doc = document
+    , text = doc.getElementById(element)
+    , range, selection
+    ;    
+    if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+    } else if (window.getSelection) {
+        selection = window.getSelection();        
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
