@@ -2,7 +2,7 @@
 // @name         Tokens Shortcuts
 // @namespace    https://github.com/DE-TylerHall/scripts
 // @version      0.4
-// @description  Token Shortcuts
+// @description  Adds token shortcut buttons to page settings modal
 // @author       Tyler
 // @updateURL    https://raw.githubusercontent.com/DE-TylerHall/scripts/master/tokenshortcutsinpagesettings
 // @match        http://*.dx1sites.com/*/ctl/Tab/action/edit/activeTab/settingTab*
