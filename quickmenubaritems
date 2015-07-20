@@ -3,13 +3,13 @@
 // @namespace  http://*.dx1sites.com/
 // @version    0.1
 // @description  Hides and shows Dx1 Menu when scrolling up and down
+// @author       Tyler
+// @updateURL    http://pastebin.com/raw.php?i=rTYdqWK2
 // @match      http://*.dx1sites.com/*
-// @copyright  2015, Dominion Enterprises
 // ==/UserScript==
 
-function addGlobalStyle(css) {
+function addMenuItems(css) {
     var head, style, url=window.location.href.split('.')[0].split('//')[1];
-    console.log(url);
     head = document.getElementsByTagName('head')[0];
     if (!head) { return; }
     style = document.createElement('style');
@@ -21,14 +21,13 @@ function addGlobalStyle(css) {
 		'<li><a href="/Admin/Site-Settings">Site Settings</a></li>'+
 		'<li><a href="/Admin/Recycle-Bin" target="_blank">Recycle Bin</a></li>'
 	);
-	console.log(/demo/i.test(window.location.href));
 	if (/demo/i.test(window.location.href))
 		$('#ControlNav').append('<li class="bold"><a href="http://'+url+'.prod.dx1sites.com" target="_blank">Open in Prod</a></li>');
 	if (/prod/i.test(window.location.href))
 		$('#ControlNav').append('<li class="bold"><a href="http://'+url+'.demo.dx1sites.com" target="_blank">Open in Demo</a></li>');
 }
 
-addGlobalStyle(
+addMenuItems(
     '#ControlNav .bold {font-weight:bold;}'+
     '.ServiceIcon{ width: 80px;}'
 );
